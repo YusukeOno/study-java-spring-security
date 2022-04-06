@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class AppUserDetails implements UserDetails {
-    // Springで必要なフィード
+    // Springで必要なフィールド
     private String userId; // ユーザーID
     private String password; // パスワード
     private Date passUpdateDate; // パスワード更新日付
@@ -74,7 +74,7 @@ public class AppUserDetails implements UserDetails {
             return true;
         } else {
             // 現在日付よりも前なら無効
-            return true;
+            return false;
         }
     }
 
