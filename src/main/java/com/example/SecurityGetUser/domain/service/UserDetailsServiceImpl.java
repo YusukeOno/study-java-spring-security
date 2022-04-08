@@ -1,6 +1,7 @@
 package com.example.SecurityGetUser.domain.service;
 
 import com.example.SecurityGetUser.domain.repository.LoginUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,12 +14,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component("UserDetailsServiceImpl")
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private LoginUserRepository repository;
 
     @Autowired
     PasswordEncoder encoder;
+
+    // ログイン失敗の上限回数
+    private static final int LOGIN_MISS_LIMIT = 3;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -40,5 +45,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // リポジトリーからパスワード更新
         repository.updatePassword(userId, encryptPass, date);
+    }
+
+    // 失敗回数と有効/無効フラグを更新する
+    public void updateUnlock(String userId,
+                             int loginMissTime) {
+        // 有効・無効フラグ（有効）
+        boolean unlock = true;
+
+        if (loginMissTime >= LOGIN_MISS_LIMIT) {
+            unlock = false;
+            log.info(userId + "をロックします");
+        }
+
+        // リポジトリーからパスワード更新
+        repository.updateUnlock(userId, loginMissTime, unlock);
     }
 }
