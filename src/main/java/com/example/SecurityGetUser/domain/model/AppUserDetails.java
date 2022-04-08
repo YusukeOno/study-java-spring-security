@@ -50,7 +50,7 @@ public class AppUserDetails implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         // ユーザー有効期限のチェック
-        if ( this.userDueDate.after(new Date())) {
+        if (this.userDueDate.after(new Date())) {
             // 現在日付よりも後なら有効
             return true;
         } else {
@@ -68,14 +68,15 @@ public class AppUserDetails implements UserDetails {
     // パスワードの有効期限チェック
     @Override
     public boolean isCredentialsNonExpired() {
-        // パスワード有効期限のチェック
-        if (this.passUpdateDate.after(new Date())) {
-            // 現在日付よりも後なら有効
-            return true;
-        } else {
-            // 現在日付よりも前なら無効
-            return false;
-        }
+        return true;
+//        // パスワード有効期限のチェック
+//        if (this.passUpdateDate.after(new Date())) {
+//            // 現在日付よりも後なら有効
+//            return true;
+//        } else {
+//            // 現在日付よりも前なら無効
+//            return false;
+//        }
     }
 
     // アカウントの有効・無効チェック

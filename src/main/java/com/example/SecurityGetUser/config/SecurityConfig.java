@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
@@ -18,6 +19,10 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    @Qualifier("SuccessHandler")
+    AuthenticationSuccessHandler successHandler;
+
     @Autowired
     @Qualifier("UserDetailsServiceImpl")
     private UserDetailsService userDetailsService;
@@ -70,7 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error") // ログイン失敗時の遷移先
                 .usernameParameter("userId") // ユーザーID
                 .passwordParameter("password") // パスワード
-                .defaultSuccessUrl("/home", true); // ログイン後の遷移先
+                .defaultSuccessUrl("/home", true) // ログイン後の遷移先
+                .successHandler(successHandler); // SuccessHandlerの設定
 
         // ログアウト処理
         http.logout()
